@@ -107,6 +107,8 @@ local function UpdateResource(frame, layoutName)
     frame.statusBar:SetStatusBarColor(r, g, b)
 end
 
+local ApplyVisibilitySettings
+
 ------------------------------------------------------------
 -- CREATE RESOURCE BAR
 ------------------------------------------------------------
@@ -150,11 +152,15 @@ local function CreateResourceBar(parent)
     frame:RegisterEvent("UNIT_POWER_UPDATE")
     frame:RegisterEvent("UNIT_MAXPOWER")
     frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+    frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
     frame:SetScript("OnEvent", function(self, event, arg1)
-        if event == "PLAYER_ENTERING_WORLD" 
-           or event == "UPDATE_SHAPESHIFT_FORM"
-           or (arg1 == "player" and (event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER")) then
+        if event == "PLAYER_ENTERING_WORLD"
+            or event == "UPDATE_SHAPESHIFT_FORM"
+            or event == "PLAYER_SPECIALIZATION_CHANGED" then
+            ApplyVisibilitySettings()
+            UpdateResource(self)
+        elseif (arg1 == "player" and (event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER")) then
             UpdateResource(self)
         end
     end)
@@ -172,6 +178,7 @@ local resourceBar = CreateResourceBar(UIParent)
 -- UTILITY FUNCTIONS
 ------------------------------------------------------------
 local function ApplyFontSettings(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = ResourceBarDB[layoutName]
     if not data then return end
 
@@ -184,7 +191,8 @@ local function ApplyFontSettings(layoutName)
     resourceBar.textValue:SetShadowOffset(1, -1)
 end
 
-local function ApplyVisibilitySettings(layoutName)
+ApplyVisibilitySettings = function(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = ResourceBarDB[layoutName]
     if not data then return end
 
@@ -207,6 +215,7 @@ local function ApplyVisibilitySettings(layoutName)
 end
 
 local function ApplyScale(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = ResourceBarDB[layoutName]
     if not data then return end
 
@@ -224,6 +233,7 @@ local function ApplyScale(layoutName)
 end
 
 local function ApplySize(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = ResourceBarDB[layoutName]
     if not data then return end
 
@@ -511,12 +521,13 @@ LEM:AddFrameSettings(resourceBar, {
 ------------------------------------------------------------
 local secondaryResources = {
     ["PALADIN"]     = Enum.PowerType.HolyPower,
-    ["MONK"]        = Enum.PowerType.Chi,
+    ["MONK"]        = nil, -- Chi Windwalker / Stagger Brewmaster
     ["ROGUE"]       = Enum.PowerType.ComboPoints,
     ["DEATHKNIGHT"] = Enum.PowerType.Runes,
     ["WARLOCK"]     = Enum.PowerType.SoulShards,
-    ["SHAMAN"]      = Enum.PowerType.Maelstrom,
+    ["SHAMAN"]      = nil, -- Maelstorm Elementalspe
     ["EVOKER"]      = Enum.PowerType.Essence,
+    ["DRUID"]       = nil -- Combo with cat form
 }
 
 local defaultSecondaryValues = {
@@ -554,6 +565,26 @@ local function GetPlayerSecondaryResource()
         elseif spec == 269 then -- Windwalker
             return Enum.PowerType.Chi
         else -- Mistweaver
+            return nil
+        end
+    end
+
+    -- Shaman special handling
+    if class == "SHAMAN" then
+        local spec = GetSpecializationInfo(specID)
+        if spec == 262 then -- Elemental
+            return Enum.PowerType.Maelstrom
+        else -- Enhancement / Restoration
+            return nil
+        end
+    end
+
+    -- Druid: form-based
+    if playerClass == "DRUID" then
+        local form = GetShapeshiftFormID() -- current form
+        if form == 1 then
+            return Enum.PowerType.ComboPoints    -- Cat form
+        else
             return nil
         end
     end
@@ -599,6 +630,8 @@ local function UpdateSecondaryResource(frame, layoutName)
     frame.statusBar:SetStatusBarColor(color.r, color.g, color.b)
 end
 
+local ApplySecondaryVisibility
+
 ------------------------------------------------------------
 -- CREATE BAR
 ------------------------------------------------------------
@@ -642,12 +675,16 @@ local function CreateSecondaryResourceBar(parent)
     frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     frame:RegisterEvent("UNIT_POWER_UPDATE")
     frame:RegisterEvent("UNIT_MAXPOWER")
+    frame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
     frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
     frame:SetScript("OnEvent", function(self, event, arg1)
         if event == "PLAYER_ENTERING_WORLD"
-            or event == "PLAYER_SPECIALIZATION_CHANGED"
-            or (arg1 == "player" and (event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER")) then
+            or event == "UPDATE_SHAPESHIFT_FORM"
+            or event == "PLAYER_SPECIALIZATION_CHANGED" then
+            ApplySecondaryVisibility()
+            UpdateSecondaryResource(self)
+        elseif (arg1 == "player" and (event == "UNIT_POWER_UPDATE" or event == "UNIT_MAXPOWER")) then
             UpdateSecondaryResource(self)
         end
     end)
@@ -662,6 +699,7 @@ local secondaryBar = CreateSecondaryResourceBar(UIParent)
 -- APPLY SETTINGS
 ------------------------------------------------------------
 local function ApplySecondaryFontSettings(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = SecondaryResourceBarDB[layoutName]
     if not data then return end
 
@@ -674,7 +712,8 @@ local function ApplySecondaryFontSettings(layoutName)
     secondaryBar.textValue:SetShadowOffset(1, -1)
 end
 
-local function ApplySecondaryVisibility(layoutName)
+ApplySecondaryVisibility = function(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = SecondaryResourceBarDB[layoutName]
     if not data then return end
 
@@ -697,6 +736,7 @@ local function ApplySecondaryVisibility(layoutName)
 end
 
 local function ApplySecondaryScale(layoutName)
+    local layoutName = layout or LEM.GetActiveLayoutName() or "Default"
     local data = SecondaryResourceBarDB[layoutName]
     if not data then return end
     local scale = data.scale or defaultSecondaryValues.scale
