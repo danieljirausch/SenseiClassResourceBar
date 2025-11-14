@@ -16,18 +16,17 @@ local commonDefaults = {
     point = "CENTER",
     x = 0,
     y = 0,
+    barVisible = "Always Visible",
     scale = 1,
     width = 200,
     height = 15,
     smoothProgress = true,
-    hideOutOfCombat = false,
     showText = true,
     showFragmentedPowerBarText = false,
     font = "Fonts\\FRIZQT__.TTF",
     fontSize = 12,
     fontOutline = "OUTLINE",
     textAlign = "CENTER",
-    enabled = true,
     maskAndBorderStyle = "Thin",
     backgroundStyle = "Semi-transparent",
     foregroundStyle = "Fade Left",
@@ -35,17 +34,17 @@ local commonDefaults = {
 
 -- Available font styles
 local fontStyles = {
-    { text = "Fonts\\FRIZQT__.TTF" },
-    { text = "Fonts\\ARIALN.TTF" },
-    { text = "Fonts\\MORPHEUS.TTF" },
-    { text = "Fonts\\SKURRI.TTF" },
+    { text = "Fonts\\FRIZQT__.TTF", isRadio = true },
+    { text = "Fonts\\ARIALN.TTF", isRadio = true },
+    { text = "Fonts\\MORPHEUS.TTF", isRadio = true },
+    { text = "Fonts\\SKURRI.TTF", isRadio = true },
 }
 
 -- Available outline styles
 local outlineStyles = {
-    { text = "NONE" },
-    { text = "OUTLINE" },
-    { text = "THICKOUTLINE" },
+    { text = "NONE", isRadio = true },
+    { text = "OUTLINE", isRadio = true },
+    { text = "THICKOUTLINE", isRadio = true },
 }
 
 -- Available mask and border styles
@@ -75,7 +74,7 @@ local maskAndBorderStyles = {
 
 local availableMaskAndBorderStyles = {}
 for styleName, _ in pairs(maskAndBorderStyles) do
-    table.insert(availableMaskAndBorderStyles, { text = styleName })
+    table.insert(availableMaskAndBorderStyles, { text = styleName, isRadio = true })
 end
 
 -- Available background styles
@@ -87,7 +86,7 @@ local backgroundStyles = {
 
 local availableBackgroundStyles = {}
 for name, _ in pairs(backgroundStyles) do
-    table.insert(availableBackgroundStyles, { text = name })
+    table.insert(availableBackgroundStyles, { text = name, isRadio = true })
 end
 
 -- Available foreground styles
@@ -100,7 +99,7 @@ local foregroundStyles = {
 
 local availableForegroundStyles = {}
 for name, _ in pairs(foregroundStyles) do
-    table.insert(availableForegroundStyles, { text = name })
+    table.insert(availableForegroundStyles, { text = name, isRadio = true })
 end
 
 -- Power types that should show discrete ticks
@@ -833,12 +832,12 @@ local function CreateBarInstance(config, parent)
             return
         end
 
-        if not data.enabled then
-            self:Hide()
-            return
-        end
 
-        if data.hideOutOfCombat then
+        if data.barVisible == "Always Visible" then
+            self:Show()
+        elseif data.barVisible == "Hidden" then
+            self:Hide()
+        elseif data.barVisible == "In Combat" then
             inCombat = inCombat or InCombatLockdown()
             if inCombat then
                 self:Show()
@@ -976,20 +975,20 @@ local function BuildLemSettings(config, frame)
     local settings = {
         {
             order = 1,
-            name = "Enabled",
-            kind = LEM.SettingType.Checkbox,
-            default = defaults.enabled,
+            name = "Bar Visible",
+            kind = LEM.SettingType.Dropdown,
+            default = defaults.barVisible,
+            values = {
+                { text = "Always Visible", isRadio = true },
+                { text = "In Combat", isRadio = true },
+                { text = "Hidden", isRadio = true },
+            },
             get = function(layoutName)
-                local data = SenseiClassResourceBarDB[config.dbName][layoutName]
-                if data and data.enabled ~= nil then
-                    return data.enabled
-                else
-                    return defaults.enabled
-                end
+                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].barVisible) or defaults.barVisible
             end,
             set = function(layoutName, value)
                 SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
-                SenseiClassResourceBarDB[config.dbName][layoutName].enabled = value
+                SenseiClassResourceBarDB[config.dbName][layoutName].barVisible = value
             end,
         },
         {
@@ -1051,7 +1050,7 @@ local function BuildLemSettings(config, frame)
         },
         {
             order = 20,
-            name = "Smooth Progress",
+            name = "Smooth Progress (Higher CPU Usage)",
             kind = LEM.SettingType.Checkbox,
             default = defaults.smoothProgress,
             get = function(layoutName)
@@ -1066,20 +1065,6 @@ local function BuildLemSettings(config, frame)
                 else
                     frame:DisableSmoothProgress()
                 end
-            end,
-        },
-        {
-            order = 30,
-            name = "Hide When Not In Combat",
-            kind = LEM.SettingType.Checkbox,
-            default = defaults.hideOutOfCombat,
-            get = function(layoutName)
-                local data = SenseiClassResourceBarDB[config.dbName][layoutName]
-                return data and data.hideOutOfCombat or defaults.hideOutOfCombat
-            end,
-            set = function(layoutName, value)
-                SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
-                SenseiClassResourceBarDB[config.dbName][layoutName].hideOutOfCombat = value
             end,
         },
         {
@@ -1151,9 +1136,9 @@ local function BuildLemSettings(config, frame)
             kind = LEM.SettingType.Dropdown,
             default = defaults.textAlign,
             values = {
-                { text = "LEFT" },
-                { text = "CENTER" },
-                { text = "RIGHT" },
+                { text = "LEFT", isRadio = true },
+                { text = "CENTER", isRadio = true },
+                { text = "RIGHT", isRadio = true },
             },
             get = function(layoutName)
                 return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].textAlign) or defaults.textAlign
@@ -1166,7 +1151,7 @@ local function BuildLemSettings(config, frame)
         },
         {
             order = 60,
-            name = "Border Style",
+            name = "Border",
             kind = LEM.SettingType.Dropdown,
             default = defaults.maskAndBorderStyle,
             values = availableMaskAndBorderStyles,
@@ -1181,7 +1166,7 @@ local function BuildLemSettings(config, frame)
         },
         {
             order = 61,
-            name = "Background Style",
+            name = "Background",
             kind = LEM.SettingType.Dropdown,
             default = defaults.backgroundStyle,
             values = availableBackgroundStyles,
@@ -1196,7 +1181,7 @@ local function BuildLemSettings(config, frame)
         },
         {
             order = 62,
-            name = "Foreground Style",
+            name = "Foreground",
             kind = LEM.SettingType.Dropdown,
             default = defaults.foregroundStyle,
             values = availableForegroundStyles,
