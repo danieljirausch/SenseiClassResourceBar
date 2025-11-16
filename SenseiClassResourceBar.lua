@@ -209,6 +209,7 @@ barConfigs.primary = {
         x = 0,
         y = 0,
         showManaAsPercent = false,
+        usePrimaryResourceAtlas = false,
     },
     getResource = function()
         local playerClass = select(2, UnitClass("player"))
@@ -297,6 +298,25 @@ barConfigs.primary = {
                     frame:UpdateDisplay(layoutName)
                 end,
             },
+            {
+                order = 63,
+                name = "Use Resource Foreground",
+                kind = LEM.SettingType.Checkbox,
+                default = defaults.usePrimaryResourceAtlas,
+                get = function(layoutName)
+                    local data = SenseiClassResourceBarDB[dbName][layoutName]
+                    if data and data.usePrimaryResourceAtlas ~= nil then
+                        return data.usePrimaryResourceAtlas
+                    else
+                        return defaults.usePrimaryResourceAtlas
+                    end
+                end,
+                set = function(layoutName, value)
+                    SenseiClassResourceBarDB[dbName][layoutName] = SenseiClassResourceBarDB[dbName][layoutName] or CopyTable(defaults)
+                    SenseiClassResourceBarDB[dbName][layoutName].usePrimaryResourceAtlas = value
+                    frame:ApplyForegroundSettings(layoutName)
+                end,
+            },
         }
     end,
 }
@@ -314,6 +334,7 @@ barConfigs.secondary = {
         hideBlizzardSecondaryResourceUi = false,
         showTicks = true,
         tickThickness = 1,
+        useSecondaryResourceAtlas = false,
     },
     getResource = function()
         local playerClass = select(2, UnitClass("player"))
@@ -491,6 +512,25 @@ barConfigs.secondary = {
                     SenseiClassResourceBarDB[dbName][layoutName] = SenseiClassResourceBarDB[dbName][layoutName] or CopyTable(defaults)
                     SenseiClassResourceBarDB[dbName][layoutName].tickThickness = value
                     frame:UpdateTicksLayout(layoutName)
+                end,
+            },
+            {
+                order = 63,
+                name = "Use Resource Foreground",
+                kind = LEM.SettingType.Checkbox,
+                default = defaults.useSecondaryResourceAtlas,
+                get = function(layoutName)
+                    local data = SenseiClassResourceBarDB[dbName][layoutName]
+                    if data and data.useSecondaryResourceAtlas ~= nil then
+                        return data.useSecondaryResourceAtlas
+                    else
+                        return defaults.useSecondaryResourceAtlas
+                    end
+                end,
+                set = function(layoutName, value)
+                    SenseiClassResourceBarDB[dbName][layoutName] = SenseiClassResourceBarDB[dbName][layoutName] or CopyTable(defaults)
+                    SenseiClassResourceBarDB[dbName][layoutName].useSecondaryResourceAtlas = value
+                    frame:ApplyForegroundSettings(layoutName)
                 end,
             },
         }
@@ -883,8 +923,12 @@ local function CreateBarInstance(config, parent, frameLevel)
         end
 
         local color = self.config.getBarColor(resource, frame)
-        self.statusBar:SetStatusBarColor(color.r, color.g, color.b)
-        
+        if (data.usePrimaryResourceAtlas == true or data.useSecondaryResourceAtlas == true) and (color.atlasElementName or color.atlas) then
+            self.statusBar:SetStatusBarColor(1, 1, 1);
+        else
+            self.statusBar:SetStatusBarColor(color.r or 1, color.g or 1, color.b or 1);
+        end
+
         if fragmentedPowerTypes[resource] then
             self:UpdateFragmentedPowerDisplay(layoutName)
         end
@@ -1146,6 +1190,20 @@ local function CreateBarInstance(config, parent, frameLevel)
         local fgStyleName = data.foregroundStyle or defaults.foregroundStyle
         local fgTexture = LSM:Fetch(LSM.MediaType.STATUSBAR, fgStyleName)
         
+        local resource = self.config.getResource()
+        local color = self.config.getBarColor(resource, frame)
+        if (data.usePrimaryResourceAtlas == true or data.useSecondaryResourceAtlas == true) and (color.atlasElementName or color.atlas) then
+            if color.atlasElementName then
+                if color.hasClassResourceVariant then
+                    fgTexture = "UI-HUD-UnitFrame-Player-PortraitOn-ClassResource-Bar-"..color.atlasElementName
+                else
+                fgTexture = "UI-HUD-UnitFrame-Player-PortraitOn-Bar-"..color.atlasElementName
+                end
+            elseif color.atlas then
+                fgTexture = color.atlas
+            end
+        end
+        
         if fgTexture then
             frame.statusBar:SetStatusBarTexture(fgTexture)
 
@@ -1403,6 +1461,15 @@ local function CreateBarInstance(config, parent, frameLevel)
     end
 
     frame:SetScript("OnEvent", function(self, event, arg1)
+        -- No need to compute stuff for disabled bar
+        local layoutName = LEM.GetActiveLayoutName()
+        if layoutName and not LEM:IsInEditMode() then
+            local data = SenseiClassResourceBarDB[self.config.dbName][layoutName]
+            if data and data.barVisible == "Hidden" then
+                return
+            end
+        end
+        
         if event == "PLAYER_ENTERING_WORLD"
             or event == "UPDATE_SHAPESHIFT_FORM"
             or (event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player") then
