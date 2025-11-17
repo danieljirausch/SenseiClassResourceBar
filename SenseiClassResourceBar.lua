@@ -998,9 +998,9 @@ local function CreateBarInstance(config, parent, frameLevel)
         elseif resource == "SOUL_FRAGMENTS" then
             -- Different color during Void Metamorphosis
             if DemonHunterSoulFragmentsBar and DemonHunterSoulFragmentsBar.CollapsingStarBackground:IsShown() then
-                color = { r = 0.037, g = 0.220, b = 0.566 }
+                color = { r = 0.037, g = 0.220, b = 0.566, atlas = "UF-DDH-CollapsingStar-Bar-Ready" }
             else 
-                color = { r = 0.278, g = 0.125, b = 0.796 }
+                color = { r = 0.278, g = 0.125, b = 0.796, atlas = "UF-DDH-VoidMeta-Bar-Ready" }
             end
         elseif resource == Enum.PowerType.Runes then
             local spec = GetSpecialization()
