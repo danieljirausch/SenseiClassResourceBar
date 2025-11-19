@@ -17,6 +17,14 @@ function HealthBarMixin:GetBarColor()
     end
 end
 
+function HealthBarMixin :GetResourceNumberColor()
+    return addonTable:GetOverrideTextColor(addonTable.RegistereredBar.HealthBar.frameName, addonTable.TextId.ResourceNumber) or { r = 1, b = 1, g = 1}
+end
+
+function HealthBarMixin:GetResourceChargeTimerColor()
+    return addonTable:GetOverrideTextColor(addonTable.RegistereredBar.HealthBar.frameName, addonTable.TextId.ResourceChargeNumber) or { r = 1, b = 1, g = 1}
+end
+
 function HealthBarMixin:GetResource()
     return "HEALTH"
 end

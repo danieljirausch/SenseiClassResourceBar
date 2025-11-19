@@ -1,5 +1,23 @@
 local _, addonTable = ...
 
+function addonTable:GetOverrideTextColor(frameName, textId)
+    local color = { r = 1, b = 1, g = 1}
+
+    local settings = SenseiClassResourceBarDB and SenseiClassResourceBarDB["_Settings"]
+    local categorySettings = settings and settings[frameName]
+    local textColors = categorySettings and settings[frameName]["TextColors"]
+    local overrideColor = textColors and textColors[textId]
+
+    if overrideColor then
+        if overrideColor.r then color.r = overrideColor.r end
+        if overrideColor.g then color.g = overrideColor.g end
+        if overrideColor.b then color.b = overrideColor.b end
+        if overrideColor.a then color.a = overrideColor.a end
+    end
+
+    return color
+end
+
 function addonTable:GetOverrideResourceColor(resource)
     local color, settingKey = addonTable:GetResourceColor(resource)
 

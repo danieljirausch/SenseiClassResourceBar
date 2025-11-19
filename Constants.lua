@@ -27,6 +27,14 @@ local function InitLSM()
 end
 InitLSM()
 
+------------------------------------------------------------
+-- Constants
+------------------------------------------------------------
+
+addonTable.TextId = {
+    ResourceNumber = 0,
+    ResourceChargeTimer = 1,
+}
 
 ------------------------------------------------------------
 -- COMMON DEFAULTS & DROPDOWN OPTIONS

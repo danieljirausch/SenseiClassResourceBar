@@ -4,6 +4,14 @@ local LEM = addonTable.LEM or LibStub("LibEditMode")
 
 local SecondaryResourceBarMixin = Mixin({}, addonTable.PowerBarMixin)
 
+function SecondaryResourceBarMixin:GetResourceNumberColor()
+    return addonTable:GetOverrideTextColor(addonTable.RegistereredBar.SecondaryResourceBar.frameName, addonTable.TextId.ResourceNumber) or { r = 1, b = 1, g = 1}
+end
+
+function SecondaryResourceBarMixin:GetResourceChargeTimerColor()
+    return addonTable:GetOverrideTextColor(addonTable.RegistereredBar.SecondaryResourceBar.frameName, addonTable.TextId.ResourceChargeNumber) or { r = 1, b = 1, g = 1}
+end
+
 function SecondaryResourceBarMixin:GetResource()
     local playerClass = select(2, UnitClass("player"))
     local secondaryResources = {
