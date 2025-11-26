@@ -232,9 +232,7 @@ function BarMixin:UpdateDisplay(layoutName, force)
 
     local resource = self:GetResource()
     if not resource then
-        if not LEM:IsInEditMode() then
-            self:Hide()
-        else 
+        if LEM:IsInEditMode() then
             -- "4" text for edit mode is resource does not exist (e.g. Secondary resource for warrior)
             self.StatusBar:SetMinMaxValues(0, 5)
             self.TextValue:SetText("4")
@@ -292,6 +290,20 @@ function BarMixin:ApplyVisibilitySettings(layoutName, inCombat)
         return
     end
 
+    local resource = self:GetResource()
+    if not resource then
+        self:Hide()
+        return
+    end
+
+    local spec = C_SpecializationInfo.GetSpecialization()
+    local role = select(5, C_SpecializationInfo.GetSpecializationInfo(spec))
+
+    if resource == Enum.PowerType.Mana and role == "DAMAGER" and data.hideManaOnDps == true then
+        self:Hide();
+        return
+    end
+
     if data.barVisible == "Always Visible" then
         self:Show()
     elseif data.barVisible == "Hidden" then
@@ -320,14 +332,6 @@ function BarMixin:ApplyVisibilitySettings(layoutName, inCombat)
         self:Show()
     end
 
-    local resource = self:GetResource()
-    local spec = C_SpecializationInfo.GetSpecialization()
-    local role = select(5, C_SpecializationInfo.GetSpecializationInfo(spec))
-
-    if resource == Enum.PowerType.Mana and role == "DAMAGER" and data.hideManaOnDps == true then
-        self:Hide();
-    end
-
     self:ApplyTextVisibilitySettings(layoutName)
 end
 
@@ -343,8 +347,7 @@ function BarMixin:ApplyTextVisibilitySettings(layoutName)
 end
 
 function BarMixin:HideBlizzardPlayerContainer(layoutName)
-    layoutName = layoutName or LEM.GetActiveLayoutName() or "Default"
-    local data = SenseiClassResourceBarDB[self.config.dbName][layoutName]
+    local data = self:GetData(layoutName)
     if not data then return end
 
     -- InCombatLockdown() means protected frames so we cannot touch it
@@ -364,8 +367,7 @@ function BarMixin:HideBlizzardPlayerContainer(layoutName)
 end
 
 function BarMixin:HideBlizzardSecondaryResource(layoutName)
-    layoutName = layoutName or LEM.GetActiveLayoutName() or "Default"
-    local data = SenseiClassResourceBarDB[self.config.dbName][layoutName]
+    local data = self:GetData(layoutName)
     if not data then return end
 
     -- InCombatLockdown() means protected frames so we cannot touch it
