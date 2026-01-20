@@ -305,9 +305,11 @@ function BarMixin:ApplyVisibilitySettings(layoutName, inCombat)
         return
     end
 
+    local playerClass = select(2, UnitClass("player"))
     local spec = C_SpecializationInfo.GetSpecialization()
     local specID = C_SpecializationInfo.GetSpecializationInfo(spec)
     local role = select(5, C_SpecializationInfo.GetSpecializationInfo(spec))
+    local formID = GetShapeshiftFormID()
 
     if resource == "HEALTH" and data.hideHealthOnRole and data.hideHealthOnRole[role] then
         self:Hide()
@@ -320,7 +322,8 @@ function BarMixin:ApplyVisibilitySettings(layoutName, inCombat)
         return
     end
 
-    if data.hideWhileMountedOrVehicule and (IsMounted() or UnitInVehicle("player")) then
+    local isDruidInFlightForm = playerClass == "DRUID" and (formID == DRUID_FLIGHT_FORM or formID == DRUID_TRAVEL_FORM or formID == DRUID_ACQUATIC_FORM)
+    if data.hideWhileMountedOrVehicule and (IsMounted() or UnitInVehicle("player") or isDruidInFlightForm) then
         self:Hide()
         return
     end

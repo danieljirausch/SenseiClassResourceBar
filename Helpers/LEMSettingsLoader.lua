@@ -72,6 +72,7 @@ local function BuildLemSettings(bar, defaults)
                 SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
                 SenseiClassResourceBarDB[config.dbName][layoutName].hideWhileMountedOrVehicule = value
             end,
+            tooltip = "Includes Druid Travel Form",
         },
         {
             order = 200,
