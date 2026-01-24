@@ -286,7 +286,6 @@ addonTable.RegisteredBar.SecondaryResourceBar = {
                 end,
             },
             {
-                name = "b",
                 parentId = "Bar Settings",
                 order = 304,
                 kind = LEM.SettingType.Divider,
@@ -346,7 +345,7 @@ addonTable.RegisteredBar.SecondaryResourceBar = {
             },
             {
                 parentId = "Text Settings",
-                order = 405,
+                order = 505,
                 name = "Show Mana As Percent",
                 kind = LEM.SettingType.Checkbox,
                 default = defaults.showManaAsPercent,
@@ -370,14 +369,13 @@ addonTable.RegisteredBar.SecondaryResourceBar = {
                 tooltip = "Force the Percent format on Mana",
             },
             {
-                name = "c",
                 parentId = "Text Settings",
-                order = 406,
+                order = 506,
                 kind = LEM.SettingType.Divider,
             },
             {
                 parentId = "Text Settings",
-                order = 407,
+                order = 507,
                 name = "Show Resource Charge Timer (e.g. Runes)",
                 kind = LEM.SettingType.CheckboxColor,
                 default = defaults.showFragmentedPowerBarText,
@@ -407,7 +405,7 @@ addonTable.RegisteredBar.SecondaryResourceBar = {
             },
             {
                 parentId = "Text Settings",
-                order = 408,
+                order = 508,
                 name = "Charge Timer Precision",
                 kind = LEM.SettingType.Dropdown,
                 default = defaults.fragmentedPowerBarTextPrecision,

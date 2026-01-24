@@ -139,7 +139,7 @@ addonTable.RegisteredBar.HealthBar = {
             },
             {
                 parentId = "Bar Style",
-                order = 604,
+                order = 404,
                 name = "Use Class Color",
                 kind = LEM.SettingType.Checkbox,
                 default = defaults.useClassColor,
@@ -156,7 +156,7 @@ addonTable.RegisteredBar.HealthBar = {
                     SenseiClassResourceBarDB[dbName][layoutName].useClassColor = value
                     bar:ApplyLayout(layoutName)
                 end,
-            }
+            },
         }
     end,
 }

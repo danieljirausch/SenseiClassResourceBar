@@ -129,7 +129,7 @@ addonTable.RegisteredBar.PrimaryResourceBar = {
             },
             {
                 parentId = "Text Settings",
-                order = 405,
+                order = 505,
                 name = "Show Mana As Percent",
                 kind = LEM.SettingType.Checkbox,
                 default = defaults.showManaAsPercent,

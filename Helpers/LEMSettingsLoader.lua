@@ -359,7 +359,7 @@ local function BuildLemSettings(bar, defaults)
             end,
         },
         {
-            order = 400,
+            order = 500,
             name = "Text Settings",
             kind = LEM.SettingType.Collapsible,
             id = "Text Settings",
@@ -367,7 +367,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Text Settings",
-            order = 401,
+            order = 501,
             name = "Show Resource Number",
             kind = LEM.SettingType.CheckboxColor,
             default = defaults.showText,
@@ -397,7 +397,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Text Settings",
-            order = 402,
+            order = 502,
             name = "Format",
             kind = LEM.SettingType.Dropdown,
             default = defaults.textFormat,
@@ -418,7 +418,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Text Settings",
-            order = 403,
+            order = 503,
             name = "Precision",
             kind = LEM.SettingType.Dropdown,
             default = defaults.textPrecision,
@@ -439,7 +439,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Text Settings",
-            order = 404,
+            order = 504,
             name = "Alignment",
             kind = LEM.SettingType.Dropdown,
             default = defaults.textAlign,
@@ -459,7 +459,7 @@ local function BuildLemSettings(bar, defaults)
             end,
         },
         {
-            order = 500,
+            order = 600,
             name = "Font",
             kind = LEM.SettingType.Collapsible,
             id = "Font",
@@ -467,7 +467,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Font",
-            order = 501,
+            order = 601,
             name = "Font",
             kind = LEM.SettingType.Dropdown,
             default = defaults.font,
@@ -537,7 +537,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Font",
-            order = 502,
+            order = 602,
             name = "Size",
             kind = LEM.SettingType.Slider,
             default = defaults.fontSize,
@@ -556,7 +556,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Font",
-            order = 503,
+            order = 603,
             name = "Outline",
             kind = LEM.SettingType.Dropdown,
             default = defaults.fontOutline,
@@ -572,7 +572,7 @@ local function BuildLemSettings(bar, defaults)
             end,
         },
         {
-            order = 600,
+            order = 400,
             name = "Bar Style",
             kind = LEM.SettingType.Collapsible,
             id = "Bar Style",
@@ -580,7 +580,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Bar Style",
-            order = 601,
+            order = 401,
             name = "Border",
             kind = LEM.SettingType.DropdownColor,
             default = defaults.maskAndBorderStyle,
@@ -607,7 +607,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Bar Style",
-            order = 602,
+            order = 402,
             name = "Background",
             kind = LEM.SettingType.DropdownColor,
             default = defaults.backgroundStyle,
@@ -684,7 +684,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Bar Style",
-            order = 603,
+            order = 403,
             name = "Use Resource Texture And Color",
             kind = LEM.SettingType.Checkbox,
             default = defaults.useResourceAtlas,
@@ -704,7 +704,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Bar Style",
-            order = 605,
+            order = 405,
             name = "Bar Texture",
             kind = LEM.SettingType.Dropdown,
             default = defaults.foregroundStyle,
