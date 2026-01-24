@@ -123,6 +123,66 @@ local function BuildLemSettings(bar, defaults)
         {
             parentId = "Position & Size",
             order = 203,
+            name = "Relative Frame",
+            kind = LEM.SettingType.Dropdown,
+            default = defaults.relativeFrame,
+            useOldStyle = true,
+            values = addonTable.availableRelativeFrames(config),
+            get = function(layoutName)
+                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].relativeFrame) or defaults.relativeFrame
+            end,
+            set = function(layoutName, value)
+                SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
+                SenseiClassResourceBarDB[config.dbName][layoutName].relativeFrame = value
+                SenseiClassResourceBarDB[config.dbName][layoutName].x = 0
+                SenseiClassResourceBarDB[config.dbName][layoutName].y = 0
+                bar:ApplyLayout(layoutName)
+                LEM.internal:RefreshSettingValues({"X Position", "Y Position"})
+            end,
+            tooltip = "Due to limitations, you may not drag the frame if anchored to another frame than UIParent. Use the X/Y sliders",
+        },
+        {
+            parentId = "Position & Size",
+            order = 204,
+            name = "Anchor Point",
+            kind = LEM.SettingType.Dropdown,
+            default = defaults.availableAnchorPoints,
+            useOldStyle = true,
+            values = addonTable.availableAnchorPoints,
+            get = function(layoutName)
+                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].point) or defaults.point
+            end,
+            set = function(layoutName, value)
+                SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
+                SenseiClassResourceBarDB[config.dbName][layoutName].point = value
+                bar:ApplyLayout(layoutName)
+            end,
+        },
+        {
+            parentId = "Position & Size",
+            order = 205,
+            name = "Relative Point",
+            kind = LEM.SettingType.Dropdown,
+            default = defaults.relativePoint,
+            useOldStyle = true,
+            values = addonTable.availableRelativePoints,
+            get = function(layoutName)
+                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].relativePoint) or defaults.relativePoint
+            end,
+            set = function(layoutName, value)
+                SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
+                SenseiClassResourceBarDB[config.dbName][layoutName].relativePoint = value
+                bar:ApplyLayout(layoutName)
+            end,
+        },
+        {
+            parentId = "Position & Size",
+            order = 206,
+            kind = LEM.SettingType.Divider,
+        },
+        {
+            parentId = "Position & Size",
+            order = 207,
             name = "Bar Size",
             kind = LEM.SettingType.Slider,
             default = defaults.scale,
@@ -144,7 +204,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Position & Size",
-            order = 204,
+            order = 208,
             name = "Width Mode",
             kind = LEM.SettingType.Dropdown,
             default = defaults.widthMode,
@@ -161,7 +221,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Position & Size",
-            order = 205,
+            order = 209,
             name = "Width",
             kind = LEM.SettingType.Slider,
             default = defaults.width,
@@ -185,7 +245,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Position & Size",
-            order = 206,
+            order = 210,
             name = "Minimum Width",
             kind = LEM.SettingType.Slider,
             default = defaults.minWidth,
@@ -210,7 +270,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = "Position & Size",
-            order = 207,
+            order = 211,
             name = "Height",
             kind = LEM.SettingType.Slider,
             default = defaults.height,
@@ -735,6 +795,7 @@ function LEMSettingsLoaderMixin:Init(bar, defaults)
     local function OnPositionChanged(frame, layoutName, point, x, y)
         SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
         SenseiClassResourceBarDB[config.dbName][layoutName].point = point
+        SenseiClassResourceBarDB[config.dbName][layoutName].relativePoint = point
         SenseiClassResourceBarDB[config.dbName][layoutName].x = x
         SenseiClassResourceBarDB[config.dbName][layoutName].y = y
         bar:ApplyLayout(layoutName)

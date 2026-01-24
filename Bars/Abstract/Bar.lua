@@ -452,6 +452,16 @@ function BarMixin:ApplyLayout(layoutName, force)
 
     local scale = data.scale or defaults.scale
     local point = data.point or defaults.point
+    local relativePoint = data.relativePoint or defaults.relativePoint
+    local relativeFrame = data.relativeFrame or defaults.relativeFrame
+    local resolvedRelativeFrame = addonTable.resolveRelativeFrames(relativeFrame) or UIParent
+    -- Cannot anchor to itself
+    if self.Frame == resolvedRelativeFrame then
+        resolvedRelativeFrame = UIParent
+    end
+    -- Disable drag & drop if the relative frame is not UIParent, due to LEM limitation making x and y position incorrect when dragging
+    LEM:SetFrameDragEnabled(self.Frame, resolvedRelativeFrame == UIParent)
+
     local x = data.x or defaults.x
     local y = data.y or defaults.y
 
@@ -468,7 +478,7 @@ function BarMixin:ApplyLayout(layoutName, force)
     self.Frame:SetSize(max(LEM:IsInEditMode() and 2 or 1, width * scale), max(LEM:IsInEditMode() and 2 or 1, height * scale))
     self.Frame:ClearAllPoints()
     local uiWidth, uiHeight = UIParent:GetWidth() / 2, UIParent:GetHeight() / 2
-    self.Frame:SetPoint(point, UIParent, point, addonTable.clamp(x, uiWidth * -1, uiWidth), addonTable.clamp(y, uiHeight * -1, uiHeight))
+    self.Frame:SetPoint(point, resolvedRelativeFrame, relativePoint, addonTable.clamp(x, uiWidth * -1, uiWidth), addonTable.clamp(y, uiHeight * -1, uiHeight))
 
     self:SetFrameStrata(data.barStrata or defaults.barStrata)
     self:ApplyFontSettings(layoutName)

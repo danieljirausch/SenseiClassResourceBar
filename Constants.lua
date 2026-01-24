@@ -37,17 +37,14 @@ InitLSM()
 -- Constants
 ------------------------------------------------------------
 
-addonTable.TextId = {
-    ResourceNumber = 0,
-    ResourceChargeTimer = 1,
-}
-
 ------------------------------------------------------------
 -- COMMON DEFAULTS & DROPDOWN OPTIONS
 ------------------------------------------------------------
 addonTable.commonDefaults = {
 	enableOverlayToggle = true,
     point = "CENTER",
+    relativeFrame = "UIParent",
+    relativePoint = "CENTER",
     x = 0,
     y = 0,
     barVisible = "Always Visible",
@@ -100,6 +97,91 @@ addonTable.availableRoleOptions = {
     { text = "Tank", value = "TANK" },
     { text = "Healer", value = "HEALER" },
     { text = "DPS", value = "DAMAGER" },
+}
+
+addonTable.availableRelativeFrames = function(config)
+    local frames = {
+        { text = "UIParent" },
+    }
+
+    if config.frameName == "HealthBar" then
+        table.insert(frames, { text = "Primary Resource Bar" })
+        table.insert(frames, { text = "Secondary Resource Bar" })
+    elseif config.frameName == "PrimaryResourceBar" then
+        table.insert(frames, { text = "Health Bar" })
+        table.insert(frames, { text = "Secondary Resource Bar" })
+    elseif config.frameName == "SecondaryResourceBar" then
+        table.insert(frames, { text = "Health Bar" })
+        table.insert(frames, { text = "Primary Resource Bar" })
+    else
+        table.insert(frames, { text = "Health Bar" })
+        table.insert(frames, { text = "Primary Resource Bar" })
+        table.insert(frames, { text = "Secondary Resource Bar" })
+    end
+
+    local additionalFrames = {
+        { text = "PlayerFrame" },
+        { text = "TargetFrame" },
+        { text = "Essential Cooldowns" },
+        { text = "Utility Cooldowns" },
+        { text = "Action Bar" },
+    }
+
+    for _, frame in pairs(additionalFrames) do
+        table.insert(frames, frame)
+    end
+
+    for i = 2, 8 do
+        table.insert(frames, { text = "Action Bar " .. i })
+    end
+
+    return frames
+end
+
+addonTable.resolveRelativeFrames = function(relativeFrame)
+    local tbl = {
+        ["UIParent"] = UIParent,
+        ["Health Bar"] = addonTable.barInstances and addonTable.barInstances["HealthBar"] and addonTable.barInstances["HealthBar"].Frame,
+        ["Primary Resource Bar"] = addonTable.barInstances and addonTable.barInstances["PrimaryResourceBar"] and addonTable.barInstances["PrimaryResourceBar"].Frame,
+        ["Secondary Resource Bar"] = addonTable.barInstances and addonTable.barInstances["SecondaryResourceBar"] and addonTable.barInstances["SecondaryResourceBar"].Frame,
+        ["PlayerFrame"] = PlayerFrame,
+        ["TargetFrame"] = TargetFrame,
+        ["Essential Cooldowns"] = _G["EssentialCooldownViewer"],
+        ["Utility Cooldowns"] = _G["UtilityCooldownViewer"],
+        ["Action Bar"] = _G["MainActionBar"],
+        ["Action Bar 2"] = _G["MultiBarBottomLeft"],
+        ["Action Bar 3"] = _G["MultiBarBottomRight"],
+        ["Action Bar 4"] = _G["MultiBarRight"],
+        ["Action Bar 5"] = _G["MultiBarLeft"],
+        ["Action Bar 6"] = _G["MultiBar5"],
+        ["Action Bar 7"] = _G["MultiBar6"],
+        ["Action Bar 8"] = _G["MultiBar7"],
+    }
+    return tbl[relativeFrame] or UIParent
+end
+
+addonTable.availableAnchorPoints = {
+    { text = "TOPLEFT" },
+    { text = "TOP" },
+    { text = "TOPRIGHT" },
+    { text = "LEFT" },
+    { text = "CENTER" },
+    { text = "RIGHT" },
+    { text = "BOTTOMLEFT" },
+    { text = "BOTTOM" },
+    { text = "BOTTOMRIGHT" },
+}
+
+addonTable.availableRelativePoints = {
+    { text = "TOPLEFT" },
+    { text = "TOP" },
+    { text = "TOPRIGHT" },
+    { text = "LEFT" },
+    { text = "CENTER" },
+    { text = "RIGHT" },
+    { text = "BOTTOMLEFT" },
+    { text = "BOTTOM" },
+    { text = "BOTTOMRIGHT" },
 }
 
 addonTable.availableWidthModes = {
@@ -213,13 +295,3 @@ addonTable.fragmentedPowerTypes = {
     [Enum.PowerType.Runes] = true,
     ["MAELSTROM_WEAPON"] = true,
 }
-
-addonTable.clamp = function(x, min, max)
-    if x < min then
-        return min
-    elseif x > max then
-        return max
-    else
-        return x
-    end
-end
