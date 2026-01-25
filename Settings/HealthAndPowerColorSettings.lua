@@ -144,7 +144,11 @@ addonTable.SettingsPanelInitializers[featureId] = function(category)
 		SenseiClassResourceBarDB["_Settings"]["PowerColors"] = {}
 	end
 
-	SettingsLib:CreateHeader(category, L["SETTINGS_HEADER_POWER_COLORS"])
+    local powerColorSection = SettingsLib:CreateExpandableSection(category, {
+        name = L["SETTINGS_HEADER_POWER_COLORS"],
+        expanded = true,
+        colorizeTitle = true,
+    })
 
     SettingsLib:CreateColorOverrides(category, {
         entries = PowerData,
@@ -162,9 +166,14 @@ addonTable.SettingsPanelInitializers[featureId] = function(category)
             return color.r, color.g, color.b, color.a or 1
         end,
         colorizeLabel = true,
+        parentSection = powerColorSection,
     })
 
-	SettingsLib:CreateHeader(category, L["SETTINGS_HEADER_HEALTH_COLOR"])
+    local healthColorSection = SettingsLib:CreateExpandableSection(category, {
+        name = L["SETTINGS_HEADER_HEALTH_COLOR"],
+        expanded = true,
+        colorizeTitle = true,
+    })
 
     SettingsLib:CreateColorOverrides(category, {
         entries = HealthData,
@@ -182,5 +191,6 @@ addonTable.SettingsPanelInitializers[featureId] = function(category)
             return color.r, color.g, color.b, color.a or 1
         end,
         colorizeLabel = true,
+        parentSection = healthColorSection,
     })
 end
