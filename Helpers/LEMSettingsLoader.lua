@@ -268,7 +268,7 @@ local function BuildLemSettings(bar, defaults)
             tooltip = L["MINIMUM_WIDTH_TOOLTIP"],
             isEnabled = function (layoutName)
                 local data = SenseiClassResourceBarDB[config.dbName][layoutName]
-                return data.widthMode == "Sync With Essential Cooldowns" or data.widthMode == "Sync With Utility Cooldowns" 
+                return data ~= nil and data ~= "Manual"
             end,
         },
         {

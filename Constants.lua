@@ -133,6 +133,7 @@ addonTable.availableRelativeFrames = function(config)
         { text = "TargetFrame" },
         { text = "Essential Cooldowns" },
         { text = "Utility Cooldowns" },
+        { text = "Tracked Buffs" },
         { text = "Action Bar" },
     }
 
@@ -157,6 +158,7 @@ addonTable.resolveRelativeFrames = function(relativeFrame)
         ["TargetFrame"] = TargetFrame,
         ["Essential Cooldowns"] = _G["EssentialCooldownViewer"],
         ["Utility Cooldowns"] = _G["UtilityCooldownViewer"],
+        ["Tracked Buffs"] = _G["BuffIconCooldownViewer"],
         ["Action Bar"] = _G["MainActionBar"],
         ["Action Bar 2"] = _G["MultiBarBottomLeft"],
         ["Action Bar 3"] = _G["MultiBarBottomRight"],
@@ -197,6 +199,7 @@ addonTable.availableWidthModes = {
     { text = "Manual" },
     { text = "Sync With Essential Cooldowns" },
     { text = "Sync With Utility Cooldowns" },
+    { text = "Sync With Tracked Buffs" },
 }
 
 addonTable.availableFillDirections = {

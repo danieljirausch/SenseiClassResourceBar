@@ -132,6 +132,25 @@ function BarMixin:InitCooldownManagerWidthHook(layoutName)
 
         self._SCRB_Utility_hooked = true
     end
+
+    v = _G["BuffIconCooldownViewer"]
+    if v and not (self._SCRB_tBuffs_hooked or false) then
+        local hookTrackedBuffs = function(width)
+            if self._SCRB_Tracked_Buff_hook_widthMode ~= "Sync With Tracked Buffs" then
+                return
+            end
+
+            if (width == nil) or (type(width) == "number" and math.floor(width) > 1) then
+                self:ApplyLayout(nil, true)
+            end
+        end
+
+        hooksecurefunc(v, "SetSize", hookTrackedBuffs)
+        hooksecurefunc(v, "Show", hookTrackedBuffs)
+        hooksecurefunc(v, "Hide", hookTrackedBuffs)
+
+        self._SCRB_tBuffs_hooked = true
+    end
 end
 
 ------------------------------------------------------------
@@ -527,7 +546,7 @@ function BarMixin:GetSize(layoutName, data)
     if not data then return defaults.width or 200, defaults.height or 15 end
 
     local width = nil
-    if data.widthMode == "Sync With Essential Cooldowns" or data.widthMode == "Sync With Utility Cooldowns" then
+    if data.widthMode ~= nil and data.widthMode ~= "Manual" then
         width = self:GetCooldownManagerWidth(layoutName) or data.width or defaults.width
         if data.minWidth and data.minWidth > 0 then
             width = max(width, data.minWidth)
@@ -785,6 +804,11 @@ function BarMixin:GetCooldownManagerWidth(layoutName)
         end
     elseif data.widthMode == "Sync With Utility Cooldowns" then
         local v = _G["UtilityCooldownViewer"]
+        if v then
+            return v:IsShown() and v:GetWidth() or nil
+        end
+    elseif data.widthMode == "Sync With Tracked Buffs" then
+        local v = _G["BuffIconCooldownViewer"]
         if v then
             return v:IsShown() and v:GetWidth() or nil
         end
