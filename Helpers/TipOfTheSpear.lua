@@ -32,10 +32,19 @@ function TipOfTheSpear:OnLoad(powerBar)
 
     if playerClass == "HUNTER" then
         powerBar.Frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+        powerBar.Frame:RegisterEvent("PLAYER_DEAD")
+        powerBar.Frame:RegisterEvent("PLAYER_ALIVE")
     end
 end
 
 function TipOfTheSpear:OnEvent(_, event, ...)
+    -- Handle Death and Resurrection Reset
+    if event == "PLAYER_DEAD" or event == "PLAYER_ALIVE" then
+        tipStacks = 0
+        tipExpiresAt = nil
+        return
+    end
+
     local unit, _, spellID = ...
     if unit ~= "player" then return end
     if event ~= "UNIT_SPELLCAST_SUCCEEDED" then return end

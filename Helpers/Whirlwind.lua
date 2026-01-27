@@ -40,10 +40,6 @@ local function HasUnhingedTalent()
   return C_SpellBook and C_SpellBook.IsSpellKnown(UNHINGED_TALENT_ID) or false
 end
 
-local function UpdateTalentState()
-  hasRequiredTalent = (C_SpellBook and C_SpellBook.IsSpellKnown(REQUIRED_TALENT_ID)) or false
-end
-
 local function IsSpellInTargetRange(spellID)
   if C_Spell and C_Spell.IsSpellInRange then
     local ok = C_Spell.IsSpellInRange(spellID, "target")
@@ -61,10 +57,20 @@ function Whirlwind:OnLoad(powerBar)
 
     if playerClass == "WARRIOR" then
         powerBar.Frame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+        powerBar.Frame:RegisterEvent("PLAYER_DEAD")
+        powerBar.Frame:RegisterEvent("PLAYER_ALIVE")
     end
 end
 
 function Whirlwind:OnEvent(_, event, ...)
+  -- Handle Death and Resurrection Reset
+    if event == "PLAYER_DEAD" or event == "PLAYER_ALIVE" then
+        iwStacks = 0
+        iwExpiresAt = nil
+        seenCastGUID = {} -- Clear GUID cache to prevent memory bloat
+        return
+    end
+
     local unit, castGUID, spellID = ...
     if unit ~= "player" then return end
     if event ~= "UNIT_SPELLCAST_SUCCEEDED" then return end
