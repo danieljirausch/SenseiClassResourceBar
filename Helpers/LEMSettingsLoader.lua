@@ -214,7 +214,8 @@ local function BuildLemSettings(bar, defaults)
             useOldStyle = true,
             values = addonTable.availableWidthModes,
             get = function(layoutName)
-                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].widthMode) or defaults.widthMode
+                local widthMode = (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].widthMode) or defaults.widthMode
+                return addonTable.availableCustomFrames[widthMode] or widthMode
             end,
             set = function(layoutName, value)
                 SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
@@ -225,31 +226,6 @@ local function BuildLemSettings(bar, defaults)
         {
             parentId = L["CATEGORY_POSITION_AND_SIZE"],
             order = 213,
-            name = L["CUSTOM_FRAME"],
-            kind = LEM.SettingType.Dropdown,
-            default = defaults.customFrame,
-            useOldStyle = true,
-            values = addonTable.availableCustomFrames,
-            get = function(layoutName)
-                return (SenseiClassResourceBarDB[config.dbName][layoutName] and SenseiClassResourceBarDB[config.dbName][layoutName].customFrameName) or nil
-            end,
-            set = function(layoutName, value)
-                local _, customFrame = strsplit(" ", value)
-                if customFrame and _G[customFrame] then
-                    SenseiClassResourceBarDB[config.dbName][layoutName] = SenseiClassResourceBarDB[config.dbName][layoutName] or CopyTable(defaults)
-                    SenseiClassResourceBarDB[config.dbName][layoutName].customFrame = customFrame
-                    SenseiClassResourceBarDB[config.dbName][layoutName].customFrameName = value
-                    bar:ApplyLayout(layoutName)
-                end
-            end,
-            isEnabled = function (layoutName)
-                local data = SenseiClassResourceBarDB[config.dbName][layoutName]
-                return data.widthMode == "Custom"
-            end,
-        },
-        {
-            parentId = L["CATEGORY_POSITION_AND_SIZE"],
-            order = 214,
             name = L["WIDTH"],
             kind = LEM.SettingType.Slider,
             default = defaults.width,
@@ -273,7 +249,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = L["CATEGORY_POSITION_AND_SIZE"],
-            order = 215,
+            order = 214,
             name = L["MINIMUM_WIDTH"],
             kind = LEM.SettingType.Slider,
             default = defaults.minWidth,
@@ -298,7 +274,7 @@ local function BuildLemSettings(bar, defaults)
         },
         {
             parentId = L["CATEGORY_POSITION_AND_SIZE"],
-            order = 216,
+            order = 215,
             name = L["HEIGHT"],
             kind = LEM.SettingType.Slider,
             default = defaults.height,

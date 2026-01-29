@@ -158,7 +158,7 @@ function BarMixin:InitCustomFrameWidthHook(layoutName)
     if not data then return nil end
     
     self._SCRB_Custom_Frames_hooked = self._SCRB_Custom_Frames_hooked or {}
-    self._SCRB_Custom_Frame = data.customFrame
+    self._SCRB_Custom_Frame = data.widthMode
 
     local hookCustomFrame = function(customFrame, width)
         if not self._SCRB_Custom_Frame or not _G[self._SCRB_Custom_Frame] or _G[self._SCRB_Custom_Frame] ~= customFrame then
@@ -170,7 +170,7 @@ function BarMixin:InitCustomFrameWidthHook(layoutName)
         end
     end
 
-    local v = _G[data.customFrame]
+    local v = _G[data.widthMode]
     if v and not self._SCRB_Custom_Frames_hooked[v] then
         self._SCRB_Custom_Frames_hooked[v] = true
 
@@ -570,7 +570,7 @@ function BarMixin:GetSize(layoutName, data)
     if not data then return defaults.width or 200, defaults.height or 15 end
 
     local width = nil
-    if data.widthMode ~= nil and data.widthMode == "Custom" then
+    if data.widthMode ~= nil and addonTable.customFrameNamesToFrame[data.widthMode] then
         width = self:GetCustomFrameWidth(layoutName) or data.width or defaults.width
         if data.minWidth and data.minWidth > 0 then
             width = max(width, data.minWidth)
@@ -848,9 +848,9 @@ end
 
 function BarMixin:GetCustomFrameWidth(layoutName)
     local data = self:GetData(layoutName)
-    if not data or not data.customFrame then return nil end
+    if not data then return nil end
 
-    local v = _G[data.customFrame]
+    local v = _G[addonTable.customFrameNamesToFrame[data.widthMode]]
     if v then
         return v:IsShown() and v:GetWidth() or nil
     end
