@@ -66,6 +66,10 @@ function HealthBarMixin:ApplyMouseSettings()
     self._mouseUpdatePending = false
 end
 
+function HealthBarMixin:OnLayoutChange()
+    self:ApplyMouseSettings()
+end
+
 function HealthBarMixin:OnLoad()
     self.Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     self.Frame:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
@@ -79,8 +83,8 @@ function HealthBarMixin:OnLoad()
     self.Frame:RegisterEvent("PET_BATTLE_CLOSE")
 
     self:RegisterSecureVisibility()
+    self:ApplyMouseSettings()
     self._mouseUpdatePending = false
-    self.Frame:RegisterForClicks("AnyUp")
     self.Frame:SetAttribute("unit", "player")
     self.Frame:SetAttribute("*type1", "target")
     self.Frame:SetAttribute("*type2", "togglemenu")
