@@ -175,9 +175,8 @@ function HealthBarMixin:ApplyVisibilitySettings(layoutName)
     local data = self:GetData(layoutName)
     if not data then return end
 
-    self:HideBlizzardPlayerContainer(layoutName, data)
-
     if not InCombatLockdown() then
+        self:HideBlizzardPlayerContainer(layoutName, data)
         self:RegisterSecureVisibility()
     end
 
