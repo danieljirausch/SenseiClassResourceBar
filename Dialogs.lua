@@ -49,6 +49,5 @@ StaticPopupDialogs["SCRB_RELOADUI"] = StaticPopupDialogs["SCRB_RELOADUI"]
         preferredIndex = 3,
     }
 StaticPopupDialogs["SCRB_RELOADUI"].OnAccept = function()
-    if InCombatLockdown then StaticPopup_Show("SCRB_RELOADUI") end
     ReloadUI()
 end

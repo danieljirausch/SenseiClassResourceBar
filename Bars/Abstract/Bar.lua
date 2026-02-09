@@ -16,6 +16,7 @@ local BarMixin = {}
 
 function BarMixin:Init(config, parent, frameLevel)
     local Frame = CreateFrame(config.frameType or "Frame", config.frameName or "", parent or UIParent, config.frameTemplate or nil)
+    Frame:SetClampedToScreen(true)
 
     Frame:SetFrameLevel(frameLevel)
     self.config = config
