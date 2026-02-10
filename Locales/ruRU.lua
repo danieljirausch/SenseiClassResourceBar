@@ -118,9 +118,9 @@ local baseLocale = {
     ["USE_CLASS_COLOR"] = "Цвет класса",
     ["USE_RESOURCE_TEXTURE_AND_COLOR"] = "Текстура и цвет ресурса",
     ["BAR_TEXTURE"] = "Текстура панели",
-    ["BACKGROUND"] = "Фон",
+    ["BAR_BACKGROUND"] = "Фон",
     ["USE_BAR_COLOR_FOR_BACKGROUND_COLOR"] = "Цвет панели для фона",
-    ["BORDER"] = "Граница",
+    ["BAR_BORDER"] = "Граница",
 
     -- Text settings category - Edit Mode
     ["CATEGORY_TEXT_SETTINGS"] = "Настройки текста",
@@ -141,7 +141,7 @@ local baseLocale = {
     ["FONT_OUTLINE"] = "Контур",
 
     -- Other
-    ["POWER_COLOR_SETTINGS"] = "Настройки цветов ресурса",    
+    ["POWER_COLOR_SETTINGS"] = "Настройки цветов ресурса",
 }
 
 addonTable:RegisterLocale("ruRU", baseLocale)
