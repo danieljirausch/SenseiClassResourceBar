@@ -376,11 +376,11 @@ addonTable.RegisteredBar.SecondaryResourceBar = {
                 valueStep = 1,
                 get = function(layoutName)
                     local data = SenseiClassResourceBarDB[dbName][layoutName]
-                    return data and data.tickThickness or defaults.tickThickness
+                    return data and addonTable.rounded(data.tickThickness) or defaults.tickThickness
                 end,
                 set = function(layoutName, value)
                     SenseiClassResourceBarDB[dbName][layoutName] = SenseiClassResourceBarDB[dbName][layoutName] or CopyTable(defaults)
-                    SenseiClassResourceBarDB[dbName][layoutName].tickThickness = value
+                    SenseiClassResourceBarDB[dbName][layoutName].tickThickness = addonTable.rounded(value)
                     bar:UpdateTicksLayout(layoutName)
                 end,
                 isEnabled = function(layoutName)
