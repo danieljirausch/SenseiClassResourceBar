@@ -116,7 +116,9 @@ local baseLocale = {
     -- Bar style category - Edit Mode
     ["CATEGORY_BAR_STYLE"] = "Bar Style",
     ["USE_CLASS_COLOR"] = "Use Class Color",
+    ["USE_CUSTOM_TEXTURE_AND_COLOR"] = "Use Custom Texture and Color",
     ["USE_RESOURCE_TEXTURE_AND_COLOR"] = "Use Resource Texture And Color",
+    ["USE_RESOURCE_TEXTURE_SPECIAL_ONLY"] = "Use Resource Texture only for Special Textures",
     ["BAR_TEXTURE"] = "Bar Texture",
     ["BAR_BACKGROUND"] = "Background",
     ["USE_BAR_COLOR_FOR_BACKGROUND_COLOR"] = "Use Bar Color For Background Color",
