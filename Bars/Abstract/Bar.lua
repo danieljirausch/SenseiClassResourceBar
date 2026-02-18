@@ -11,6 +11,30 @@ local L = addonTable.L
 local BarMixin = {}
 
 ------------------------------------------------------------
+-- HELPER FUNCTIONS
+------------------------------------------------------------
+
+local function ResolveWidthForData(barInstance, layoutName, data, defaults)
+    local width = nil
+
+    if data.widthMode ~= nil and addonTable.customFrameNamesToFrame[data.widthMode] then
+        width = barInstance:GetCustomFrameWidth(layoutName) or data.width or defaults.width
+        if data.minWidth and data.minWidth > 0 then
+            width = max(width, data.minWidth)
+        end
+    elseif data.widthMode ~= nil and data.widthMode ~= "Manual" then
+        width = barInstance:GetCooldownManagerWidth(layoutName) or data.width or defaults.width
+        if data.minWidth and data.minWidth > 0 then
+            width = max(width, data.minWidth)
+        end
+    else -- Use manual width
+        width = data.width or defaults.width
+    end
+
+    return width
+end
+
+------------------------------------------------------------
 -- BAR FACTORY
 ------------------------------------------------------------
 
@@ -583,22 +607,8 @@ function BarMixin:GetSize(layoutName, data)
         if primaryResource then
             local primaryData = primaryResource:GetData(layoutName)
             if primaryData then
-                -- Use primary bar's width and height
-                width = primaryData.width or defaults.width
+                width = ResolveWidthForData(primaryResource, layoutName, primaryData, defaults)
                 height = primaryData.height or defaults.height
-
-                -- Apply primary bar's width mode (sync with cooldown managers or custom frames)
-                if primaryData.widthMode ~= nil and addonTable.customFrameNamesToFrame[primaryData.widthMode] then
-                    width = primaryResource:GetCustomFrameWidth(layoutName) or width
-                    if primaryData.minWidth and primaryData.minWidth > 0 then
-                        width = max(width, primaryData.minWidth)
-                    end
-                elseif primaryData.widthMode ~= nil and primaryData.widthMode ~= "Manual" then
-                    width = primaryResource:GetCooldownManagerWidth(layoutName) or width
-                    if primaryData.minWidth and primaryData.minWidth > 0 then
-                        width = max(width, primaryData.minWidth)
-                    end
-                end
 
                 local scale = addonTable.rounded(data.scale or defaults.scale or 1, 2)
                 return addonTable.rounded(addonTable.getNearestPixel(width * scale, scale)), addonTable.rounded(addonTable.getNearestPixel(height * scale, scale))
@@ -607,20 +617,7 @@ function BarMixin:GetSize(layoutName, data)
     end
 
     -- Standard width mode handling for this bar
-    if data.widthMode ~= nil and addonTable.customFrameNamesToFrame[data.widthMode] then
-        width = self:GetCustomFrameWidth(layoutName) or data.width or defaults.width
-        if data.minWidth and data.minWidth > 0 then
-            width = max(width, data.minWidth)
-        end
-    elseif data.widthMode ~= nil and data.widthMode ~= "Manual" then
-        width = self:GetCooldownManagerWidth(layoutName) or data.width or defaults.width
-        if data.minWidth and data.minWidth > 0 then
-            width = max(width, data.minWidth)
-        end
-    else -- Use manual width
-        width = data.width or defaults.width
-    end
-
+    width = ResolveWidthForData(self, layoutName, data, defaults)
     height = data.height or defaults.height
 
     local scale = addonTable.rounded(data.scale or defaults.scale or 1, 2)
