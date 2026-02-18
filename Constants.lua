@@ -117,6 +117,7 @@ addonTable.availablePositionModeOptions = function(config)
     elseif config.frameName == "SecondaryResourceBar" then
         table.insert(positions, { text = L["USE_HEALTH_BAR_POSITION_IF_HIDDEN"], value = "Use Health Bar Position If Hidden" })
         table.insert(positions, { text = L["USE_PRIMARY_RESOURCE_BAR_POSITION_IF_HIDDEN"], value = "Use Primary Resource Bar Position If Hidden" })
+        table.insert(positions, { text = L["USE_PRIMARY_RESOURCE_BAR_POSITION_AND_SIZE_IF_HIDDEN"], value = "Use Primary Resource Bar Position And Size If Hidden" })
     elseif config.frameName == "TertiaryResourceBar" then
         table.insert(positions, { text = L["USE_HEALTH_BAR_POSITION_IF_HIDDEN"], value = "Use Health Bar Position If Hidden" })
         table.insert(positions, { text = L["USE_PRIMARY_RESOURCE_BAR_POSITION_IF_HIDDEN"], value = "Use Primary Resource Bar Position If Hidden" })

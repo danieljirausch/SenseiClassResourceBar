@@ -176,6 +176,7 @@ local baseLocale = {
     ["POSITION_SELF"] = "Self",
     ["USE_HEALTH_BAR_POSITION_IF_HIDDEN"] = "Use Health Bar Position If Hidden",
     ["USE_PRIMARY_RESOURCE_BAR_POSITION_IF_HIDDEN"] = "Use Primary Resource Bar Position If Hidden",
+    ["USE_PRIMARY_RESOURCE_BAR_POSITION_AND_SIZE_IF_HIDDEN"] = "Use Primary Resource Bar Position And Size If Hidden",
     ["USE_SECONDARY_RESOURCE_BAR_POSITION_IF_HIDDEN"] = "Use Secondary Resource Bar Position If Hidden",
 
     -- Frame Names

@@ -519,7 +519,8 @@ function BarMixin:GetPoint(layoutName, ignorePositionMode)
     end
 
     if not ignorePositionMode then
-        if data and data.positionMode == "Use Primary Resource Bar Position If Hidden" then
+        if data and (data.positionMode == "Use Primary Resource Bar Position If Hidden" 
+                  or data.positionMode == "Use Primary Resource Bar Position And Size If Hidden") then
             local primaryResource = addonTable.barInstances and addonTable.barInstances["PrimaryResourceBar"]
 
             if primaryResource then
@@ -574,6 +575,38 @@ function BarMixin:GetSize(layoutName, data)
     if not data then return defaults.width or 200, defaults.height or 15 end
 
     local width = nil
+    local height = nil
+
+    -- Check if we should use primary bar's size when using the new position mode
+    if data.positionMode == "Use Primary Resource Bar Position And Size If Hidden" then
+        local primaryResource = addonTable.barInstances and addonTable.barInstances["PrimaryResourceBar"]
+        if primaryResource then
+            local primaryData = primaryResource:GetData(layoutName)
+            if primaryData then
+                -- Use primary bar's width and height
+                width = primaryData.width or defaults.width
+                height = primaryData.height or defaults.height
+
+                -- Apply primary bar's width mode (sync with cooldown managers or custom frames)
+                if primaryData.widthMode ~= nil and addonTable.customFrameNamesToFrame[primaryData.widthMode] then
+                    width = primaryResource:GetCustomFrameWidth(layoutName) or width
+                    if primaryData.minWidth and primaryData.minWidth > 0 then
+                        width = max(width, primaryData.minWidth)
+                    end
+                elseif primaryData.widthMode ~= nil and primaryData.widthMode ~= "Manual" then
+                    width = primaryResource:GetCooldownManagerWidth(layoutName) or width
+                    if primaryData.minWidth and primaryData.minWidth > 0 then
+                        width = max(width, primaryData.minWidth)
+                    end
+                end
+
+                local scale = addonTable.rounded(data.scale or defaults.scale or 1, 2)
+                return addonTable.rounded(addonTable.getNearestPixel(width * scale, scale)), addonTable.rounded(addonTable.getNearestPixel(height * scale, scale))
+            end
+        end
+    end
+
+    -- Standard width mode handling for this bar
     if data.widthMode ~= nil and addonTable.customFrameNamesToFrame[data.widthMode] then
         width = self:GetCustomFrameWidth(layoutName) or data.width or defaults.width
         if data.minWidth and data.minWidth > 0 then
@@ -588,7 +621,7 @@ function BarMixin:GetSize(layoutName, data)
         width = data.width or defaults.width
     end
 
-    local height = data.height or defaults.height
+    height = data.height or defaults.height
 
     local scale = addonTable.rounded(data.scale or defaults.scale or 1, 2)
 
