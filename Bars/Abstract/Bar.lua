@@ -635,7 +635,7 @@ function BarMixin:ApplyLayout(layoutName, force)
 
     self:UpdateTicksLayout(layoutName, data)
 
-    if data.fasterUpdates then
+    if data.fasterUpdates or defaults.fasterUpdates then
         self:EnableFasterUpdates()
     else
         self:DisableFasterUpdates()
